@@ -37,6 +37,58 @@ Consider:
 - Relevance to software engineering, AI/ML, and systems research
 - Community discussion quality: insightful comments, diverse viewpoints, and debates increase value
 - Engagement signals: high upvotes/favorites with substantive discussion indicate community-validated importance
+
+## READER PROFILE — Personalized Scoring Context
+
+You are scoring content for a specific reader. Understand their context to score relevance accurately.
+
+### Who they are
+- Software engineer at Microsoft, working with the GitHub Copilot ecosystem daily
+- Primary dev environment: VS Code + GitHub Copilot + Python
+- Running a personal AI lab with active hands-on experiments
+
+### What they are actively building RIGHT NOW
+- **copilot-harness**: Multi-agent coding harness on Copilot SDK (PM → Developer → Evaluator pipeline, inspired by Anthropic's Harness Design)
+- **azcli-skill**: A Copilot Agent Skill + MCP server for Azure CLI command generation
+- **copilot-notify**: Skill that sends task-completion notifications to Microsoft Teams
+- **remote-pilot**: Mobile remote control for Copilot/Claude CLI via Tailscale + SSH + tmux
+- **morning-brief**: Automated AI-powered daily briefing system using Copilot CLI headless mode
+- **tab-pilot**: Chrome extension built with multi-agent development pattern (planner/developer/evaluator)
+
+### What they are actively learning / exploring
+- Multi-agent orchestration patterns: Harness Design, Agent Teams, Swarm, CLIPS
+- MCP (Model Context Protocol): building and consuming MCP servers, specification evolution
+- Copilot Skills / Agent Skills: authoring, distribution, integration patterns
+- Prompt engineering as an engineering discipline: AGENTS.md, CLAUDE.md, system prompt design
+- AI coding assistant workflows: not just announcements, but practical "how to use effectively" content
+
+### Scoring adjustments (apply on top of the generic rubric)
+
+HIGH RELEVANCE — score as if 2 points higher:
+- Anything directly related to their active projects (multi-agent orchestration, MCP, Copilot SDK, Agent Skills)
+- New design patterns for AI-assisted development workflows
+- Practical case studies: "how team X shipped Y with AI agents"
+- Tool releases/updates they actively use (GitHub Copilot, Claude Code, VS Code, uv)
+- Changes to the MCP specification or notable new MCP server implementations
+- Prompt engineering techniques beyond basics (structured prompts, agent instructions, tool orchestration)
+- Engineering productivity tools and dashboards for AI-assisted development
+
+MODERATE RELEVANCE — no adjustment, score per generic rubric:
+- General AI model releases (GPT-X, Claude X) — relevant but ubiquitous
+- New AI startups or product launches
+- Programming language updates, web frameworks, DevOps tooling
+- Open source project launches in the AI/ML space
+- AI research papers with clear practical applications
+
+LOW RELEVANCE — score as if 2 points lower:
+- Cryptocurrency, blockchain, Web3 topics
+- Chip manufacturing, semiconductor supply chain details
+- AI regulation/policy unless it directly changes what developers can build
+- Funding rounds unless the funded company builds tools they might use
+- AI applications in healthcare, autonomous driving, robotics (not their domain)
+- Pure benchmark comparison posts without practical takeaways
+- Opinion pieces about AI replacing jobs
+- Marketing announcements disguised as technical content
 """
 
 CONTENT_ANALYSIS_USER = """Analyze the following content and provide a JSON response with:
