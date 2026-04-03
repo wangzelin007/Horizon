@@ -1,5 +1,6 @@
 """Interactive setup wizard for Horizon configuration."""
 
+import io
 import json
 import os
 import sys
@@ -22,7 +23,11 @@ from ..storage.manager import StorageManager
 from .presets import load_presets, match_domains, collect_sources_from_domains
 
 
-console = Console()
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, OSError):
+    pass
+console = Console(force_terminal=True)
 
 
 def print_banner():

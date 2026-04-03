@@ -1,7 +1,9 @@
 """Main orchestrator coordinating the entire workflow."""
 
 import asyncio
+import io
 import re
+import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict
@@ -36,7 +38,12 @@ class HorizonOrchestrator:
         """
         self.config = config
         self.storage = storage
-        self.console = Console()
+        # Force UTF-8 output to avoid cp1252 UnicodeEncodeError on legacy Windows terminals
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError):
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+        self.console = Console(force_terminal=True)
         self.email_manager = EmailManager(config.email, console=self.console) if config.email else None
 
     async def run(self, force_hours: int = None) -> None:
@@ -111,7 +118,7 @@ class HorizonOrchestrator:
             await self._enrich_important_items(important_items)
 
             # 7. Generate and save daily summaries for each configured language
-            today = datetime.utcnow().strftime("%Y-%m-%d")
+            today = datetime.now().strftime("%Y-%m-%d")
             for lang in self.config.ai.languages:
                 summary = await self._generate_summary(important_items, today, len(all_items), language=lang)
 

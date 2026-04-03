@@ -29,7 +29,7 @@ class EmailManager:
         if console is None:
             try:
                 from rich.console import Console
-                self.console = Console()
+                self.console = Console(force_terminal=True)
             except ImportError:
                 class DummyConsole:
                     def print(self, *args, **kwargs):

@@ -6,13 +6,25 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
+import io
+
 from rich.console import Console
 
 from .storage.manager import StorageManager
 from .orchestrator import HorizonOrchestrator
 
 
-console = Console()
+def _make_console() -> Console:
+    """Create a Rich Console that works on Windows with emoji/Unicode."""
+    # Force UTF-8 output to avoid cp1252 UnicodeEncodeError on legacy Windows terminals
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    return Console(force_terminal=True)
+
+
+console = _make_console()
 
 
 def print_banner():
