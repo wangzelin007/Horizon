@@ -1,6 +1,7 @@
 """Content analysis using AI."""
 
 import json
+import logging
 import os
 import re
 from typing import List, Optional
@@ -12,12 +13,29 @@ from .prompts import CONTENT_ANALYSIS_SYSTEM, CONTENT_ANALYSIS_USER
 from .utils import parse_json_response
 from ..models import ContentItem
 
+logger = logging.getLogger(__name__)
+
 
 class ContentAnalyzer:
     """Analyzes content items using AI to determine importance."""
 
     def __init__(self, ai_client: AIClient):
         self.client = ai_client
+        self._feedback_suffix = self._load_feedback()
+
+    @staticmethod
+    def _load_feedback() -> str:
+        """Load feedback sidecar file once at init (capped at 10KB)."""
+        feedback_file = os.environ.get("HORIZON_FEEDBACK_FILE")
+        if feedback_file and os.path.isfile(feedback_file):
+            try:
+                with open(feedback_file, "r", encoding="utf-8") as f:
+                    content = f.read(10_240).strip()
+                if content:
+                    return "\n\n" + content
+            except Exception as e:
+                logger.warning("Failed to read feedback file %s: %s", feedback_file, e)
+        return ""
 
     @staticmethod
     def _parse_json_response(response: str) -> Optional[dict]:
@@ -123,17 +141,8 @@ class ContentAnalyzer:
             discussion_section=discussion_section
         )
 
-        # Get AI completion — append feedback sidecar if available
-        system_prompt = CONTENT_ANALYSIS_SYSTEM
-        feedback_file = os.environ.get("HORIZON_FEEDBACK_FILE")
-        if feedback_file and os.path.isfile(feedback_file):
-            try:
-                with open(feedback_file, "r", encoding="utf-8") as f:
-                    feedback_content = f.read().strip()
-                if feedback_content:
-                    system_prompt = system_prompt + "\n\n" + feedback_content
-            except Exception:
-                pass
+        # Get AI completion — append cached feedback if available
+        system_prompt = CONTENT_ANALYSIS_SYSTEM + self._feedback_suffix
 
         response = await self.client.complete(
             system=system_prompt,
