@@ -40,6 +40,7 @@ ENV/
 data/seen.json
 data/summaries/*.md
 data/subscribers.json
+data/.feedback-prompt.txt
 
 docs/_posts/*.md
 

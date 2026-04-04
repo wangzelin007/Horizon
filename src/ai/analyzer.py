@@ -1,9 +1,7 @@
 """Content analysis using AI."""
 
-import json
 import logging
 import os
-import re
 from typing import List, Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, MofNCompleteColumn
@@ -68,7 +66,7 @@ class ContentAnalyzer:
                         await self._analyze_item(item)
                         analyzed_items.append(item)
                     except Exception as e:
-                        print(f"Error analyzing item {item.id}: {e}")
+                        logger.error("Error analyzing item %s: %s", item.id, e)
                         item.ai_score = 0.0
                         item.ai_reason = "Analysis failed"
                         item.ai_summary = item.title
@@ -153,7 +151,7 @@ class ContentAnalyzer:
         # Parse JSON response with robust fallback
         result = self._parse_json_response(response)
         if result is None:
-            print(f"Warning: could not parse analysis response for {item.id}, using defaults")
+            logger.warning("Could not parse analysis response for %s, using defaults", item.id)
             item.ai_score = 0.0
             item.ai_reason = "Analysis response parse failed"
             item.ai_summary = item.title
