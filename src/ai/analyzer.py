@@ -1,6 +1,7 @@
 """Content analysis using AI."""
 
 import json
+import os
 import re
 from typing import List, Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -122,9 +123,20 @@ class ContentAnalyzer:
             discussion_section=discussion_section
         )
 
-        # Get AI completion
+        # Get AI completion — append feedback sidecar if available
+        system_prompt = CONTENT_ANALYSIS_SYSTEM
+        feedback_file = os.environ.get("HORIZON_FEEDBACK_FILE")
+        if feedback_file and os.path.isfile(feedback_file):
+            try:
+                with open(feedback_file, "r", encoding="utf-8") as f:
+                    feedback_content = f.read().strip()
+                if feedback_content:
+                    system_prompt = system_prompt + "\n\n" + feedback_content
+            except Exception:
+                pass
+
         response = await self.client.complete(
-            system=CONTENT_ANALYSIS_SYSTEM,
+            system=system_prompt,
             user=user_prompt,
             temperature=0.3
         )
