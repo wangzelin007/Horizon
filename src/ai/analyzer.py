@@ -70,6 +70,7 @@ class ContentAnalyzer:
                         item.ai_score = 0.0
                         item.ai_reason = "Analysis failed"
                         item.ai_summary = item.title
+                        item.ai_tags = []
                         analyzed_items.append(item)
                     progress.advance(task)
 
